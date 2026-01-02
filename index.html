@@ -3,193 +3,419 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>邱筠涵 Yuna - 正式履歷 PDF 匯出</title>
+    <title>邱筠涵 Yuna - 整合作品集與雙語履歷 (A4 完整版)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
         
-        body {
-            font-family: 'Noto Sans TC', sans-serif;
-            background-color: #f1f5f9;
-            color: #1e293b;
-        }
+        * { font-family: 'Noto Sans TC', sans-serif; box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
 
-        /* 模擬 A4 尺寸 */
-        .resume-page {
+        body { background-color: #f1f5f9; margin: 0; padding: 0; }
+
+        /* A4 規格設定 (210mm x 297mm) */
+        .pdf-page {
             width: 210mm;
-            min-height: 297mm;
-            padding: 20mm;
-            margin: 20px auto;
+            height: 297mm;
+            margin: 10px auto;
             background: white;
+            padding: 15mm;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
             position: relative;
+            display: flex;
+            flex-direction: column;
+            page-break-after: always;
         }
 
-        .section-title {
-            border-bottom: 2px solid #ea580c;
-            padding-bottom: 4px;
-            margin-bottom: 16px;
-            color: #ea580c;
-            font-weight: 900;
-            letter-spacing: 0.1em;
-        }
-
-        .highlight-box {
-            background-color: #fff7ed;
-            border-left: 4px solid #ea580c;
-            padding: 12px;
-            margin-bottom: 20px;
-        }
-
-        /* 列印設定 */
         @media print {
-            body { background: white; padding: 0; margin: 0; }
+            body { background: white !important; margin: 0; padding: 0; }
             .no-print { display: none !important; }
-            .resume-page {
-                margin: 0;
-                box-shadow: none;
-                width: 100%;
-                height: auto;
-                padding: 15mm;
+            .pdf-page {
+                margin: 0 !important;
+                box-shadow: none !important;
+                width: 210mm !important;
+                height: 297mm !important;
             }
-            a { text-decoration: none; color: inherit; }
+            .dark-theme { background-color: #020617 !important; color: white !important; }
         }
 
-        .btn-download {
-            background: #ea580c;
-            color: white;
-            padding: 12px 24px;
-            border-radius: 9999px;
-            font-weight: bold;
-            box-shadow: 0 4px 14px 0 rgba(234, 88, 12, 0.39);
-            transition: all 0.2s;
-            cursor: pointer;
+        .dark-theme { background-color: #020617; color: #f8fafc; }
+        .section-header { border-bottom: 2px solid #ea580c; padding-bottom: 4px; margin-bottom: 12px; color: #ea580c; font-weight: 900; font-size: 1.15rem; }
+        .platform-tag { background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); padding: 3px 6px; border-radius: 4px; font-size: 9px; text-align: center; }
+        .case-card { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; padding: 15px; margin-bottom: 12px; text-align: left; }
+        
+        .nav-ui {
+            background: #0f172a; color: white; padding: 12px; text-align: center; font-size: 14px; position: sticky; top: 0; z-index: 1000; border-bottom: 4px solid #ea580c;
         }
-        .btn-download:hover { background: #c2410c; transform: translateY(-1px); }
+
+        ul { list-style-type: none; padding-left: 0; }
+        .li-bullet::before { content: "▹"; color: #ea580c; margin-right: 6px; font-weight: bold; }
+        
+        strong { font-weight: 900; }
     </style>
 </head>
-<body class="py-10">
+<body>
 
-    <!-- 操作提示區 -->
-    <div class="max-w-[210mm] mx-auto mb-6 px-4 no-print text-center">
-        <h1 class="text-2xl font-bold mb-4 text-slate-800">履歷 PDF 匯出工具</h1>
-        <p class="text-slate-600 mb-6">點擊下方按鈕後，在彈出的視窗中選擇「<strong>另存為 PDF</strong>」即可完成。</p>
-        <button onclick="window.print()" class="btn-download">
-            立即下載 / 列印 PDF 履歷
+    <!-- 平板專用操作 UI -->
+    <div class="nav-ui no-print">
+        <p class="font-bold mb-2 text-center">📄 邱筠涵 Yuna - 整合作品集與雙語履歷 A4 列印版</p>
+        <button onclick="window.print()" class="bg-orange-600 hover:bg-orange-700 text-white px-10 py-2 rounded-full font-black shadow-lg">
+            立即另存為 PDF (請務必勾選「背景圖形」)
         </button>
     </div>
 
-    <!-- 履歷主體 -->
-    <div class="resume-page">
-        <!-- 頁首 -->
-        <header class="flex justify-between items-start mb-10">
-            <div>
-                <h1 class="text-4xl font-black text-slate-900 mb-2">邱筠涵 <span class="text-slate-400 font-light text-2xl uppercase">Yuna Chiu</span></h1>
-                <p class="text-orange-600 font-bold text-lg">電商營運資深專員</p>
+    <!-- ==========================================
+         [PAGE 1] 作品集封面與專業職能
+         ========================================== -->
+    <div class="pdf-page dark-theme">
+        <div class="text-center mt-12 mb-10">
+            <span class="text-orange-500 font-bold tracking-[0.3em] text-xs uppercase block mb-4 text-center">Ecommerce Growth Portfolio 2026</span>
+            <h1 class="text-6xl font-black mb-4 text-center">邱筠涵 Yuna</h1>
+            <p class="text-2xl text-slate-400 mb-12 text-center">跨平台營運 × 數據導向成長 × 活動策略專家</p>
+            
+            <div class="grid grid-cols-3 gap-6 mb-12 text-center">
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/10 text-center">
+                    <div class="text-4xl font-black text-orange-500 text-center">4年</div>
+                    <div class="text-[10px] text-slate-500 uppercase tracking-widest mt-1 font-bold text-center">電商經驗</div>
+                </div>
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/10 text-center">
+                    <div class="text-4xl font-black text-blue-400 text-center">23+</div>
+                    <div class="text-[10px] text-slate-500 uppercase tracking-widest mt-1 font-bold text-center">操作平台</div>
+                </div>
+                <div class="bg-white/5 p-6 rounded-3xl border border-white/10 text-center">
+                    <div class="text-4xl font-black text-purple-400 text-center">9000萬</div>
+                    <div class="text-[10px] text-slate-500 uppercase tracking-widest mt-1 font-bold text-center">年營收表現</div>
+                </div>
             </div>
-            <div class="text-right text-sm text-slate-600 space-y-1">
+
+            <div class="bg-white/5 p-6 rounded-2xl border border-white/10 mb-8 text-center">
+                <h4 class="text-sm font-bold mb-6 flex items-center justify-center text-center">23+ 平台實戰佈局</h4>
+                <div class="grid grid-cols-7 gap-2">
+                    <span class="platform-tag">momo</span><span class="platform-tag">蝦皮購物</span><span class="platform-tag">PChome</span>
+                    <span class="platform-tag">Yahoo</span><span class="platform-tag">酷澎</span><span class="platform-tag">博客來</span>
+                    <span class="platform-tag">Costco</span><span class="platform-tag">屈臣氏</span><span class="platform-tag">康是美</span>
+                    <span class="platform-tag">Line禮物</span><span class="platform-tag">誠品線上</span><span class="platform-tag">電信平台</span>
+                    <span class="platform-tag">航空免稅</span><span class="platform-tag">品牌官網</span>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="text-xl font-black text-orange-500 border-b border-white/10 pb-2 mb-6 uppercase text-left tracking-wider">Professional Competency</h3>
+        <div class="grid grid-cols-2 gap-4 text-left">
+            <div class="bg-white/5 p-4 rounded-xl text-[11px] leading-relaxed">
+                <strong class="text-white text-xs block mb-1">電商平台營運管理</strong>
+                熟稔 Shopee、MOMO 及各類 B2C/C2C 通路後台，擅長針對不同平台屬性進行差異化經營策略佈局。
+            </div>
+            <div class="bg-white/5 p-4 rounded-xl text-[11px] leading-relaxed">
+                <strong class="text-white text-xs block mb-1">行銷活動規劃與執行</strong>
+                全案策劃大型促銷檔期（Double Day）、品牌日及跨界聯名活動，透過議題包裝驅動購買慾與轉單率。
+            </div>
+            <div class="bg-white/5 p-4 rounded-xl text-[11px] leading-relaxed">
+                <strong class="text-white text-xs block mb-1">新通路開發與業務洽談</strong>
+                具備豐富的商務對接經驗，包含線上平台合約洽談、KOL 合作導流及虛實通路整合（OMO）佈局。
+            </div>
+            <div class="bg-white/5 p-4 rounded-xl text-[11px] leading-relaxed">
+                <strong class="text-white text-xs block mb-1">數據分析與成效追蹤</strong>
+                深度監測轉換率（CR）、曝光數與 ROI，善用復盤分析優化下一階段的營運效率與預算配置。
+            </div>
+            <div class="bg-white/5 p-4 rounded-xl text-[11px] leading-relaxed">
+                <strong class="text-white text-xs block mb-1">數位廣告投放與優化</strong>
+                操作 Facebook Ads 及 Google Ads 平台，精準定位客群並隨時根據數據動態調整競價策略。
+            </div>
+            <div class="bg-white/5 p-4 rounded-xl text-[11px] leading-relaxed">
+                <strong class="text-white text-xs block mb-1">視覺與文案設計協作</strong>
+                主導商品頁面改版與品牌故事視覺規劃，有效引導設計團隊達成「銷售導向」的素材產出。
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         [PAGE 2] 作品集：案例一 & 二 完整細節
+         ========================================== -->
+    <div class="pdf-page dark-theme">
+        <h3 class="text-2xl font-black text-orange-500 mb-6 uppercase border-b border-white/10 pb-2 text-left">Case Studies / 專案案例詳解</h3>
+        
+        <!-- Case 1 -->
+        <div class="case-card mb-8">
+            <h4 class="text-xl font-bold text-white mb-1 text-left">案例一：活動 / 回饋 / 價格策略設計</h4>
+            <p class="text-orange-400 text-[10px] font-bold mb-4 uppercase italic text-left text-left">蝦皮 (主) / YAHOO (輔) | 高單價耐用品 (家電)</p>
+            <div class="grid grid-cols-2 gap-6 text-[11px] leading-relaxed text-left text-left">
+                <div>
+                    <strong class="text-orange-500 block mb-2 font-black text-left">WHY (痛點分析)</strong>
+                    <ul class="space-y-1 text-slate-300 text-left">
+                        <li class="li-bullet text-left">檔期回饋種類多，全開易導致毛利蝕本</li>
+                        <li class="li-bullet text-left">消費者只在意「最大方案」，分散效果不彰</li>
+                        <li class="li-bullet text-left">ROAS 表現不穩，回饋效率極待優化</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong class="text-blue-400 block mb-2 font-black text-left">HOW (策略執行)</strong>
+                    <ul class="space-y-1 text-slate-300 text-left">
+                        <li class="li-bullet text-left">拆解三大變因：門檻、形式、上限</li>
+                        <li class="li-bullet text-left">比較不同方案對毛利與轉換的預估影響</li>
+                        <li class="li-bullet text-left">確立「單一最優回饋」策略，鎖定主力商品客單價</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-white/10 text-left">
+                <strong class="text-purple-400 text-[11px] block mb-2 font-black text-left">WHAT I DID (具體行動)</strong>
+                <p class="text-[10px] text-slate-300 text-left">規劃活動門檻與回饋結構 (買多省多)、運用 Google Sheets 建立回饋試算模型、更換視覺素材呈現最佳方案、置頂熱賣品並協作行銷、廣告資源整合。</p>
+            </div>
+            <div class="mt-4 grid grid-cols-3 gap-3 text-center">
+                <div class="bg-orange-500/10 p-2 rounded-xl text-center"><p class="text-slate-500 text-[8px] text-center">業績成長</p><p class="text-orange-500 font-black text-xl text-center">+94%</p></div>
+                <div class="bg-blue-500/10 p-2 rounded-xl text-center"><p class="text-slate-500 text-[8px] text-center">ROAS 提升</p><p class="text-blue-400 font-black text-xl text-center">22.36→75.24</p></div>
+                <div class="bg-green-500/10 p-2 rounded-xl text-center"><p class="text-slate-500 text-[8px] text-center">毛利結構</p><p class="text-green-400 font-black text-xl text-center">顯著優化</p></div>
+            </div>
+        </div>
+
+        <!-- Case 2 -->
+        <div class="case-card mb-8">
+            <h4 class="text-xl font-bold text-white mb-1 text-left text-left">案例二：平台經營策略 (蝦皮 x YAHOO)</h4>
+            <p class="text-orange-400 text-[10px] font-bold mb-4 uppercase italic text-left text-left">流量引擎 vs 穩定毛利之角色定位優化</p>
+            <div class="grid grid-cols-2 gap-6 text-[11px] leading-relaxed text-left text-left">
+                <div>
+                    <strong class="text-orange-500 block mb-2 font-black text-left">WHY</strong>
+                    <ul class="space-y-1 text-slate-300 text-left">
+                        <li class="li-bullet text-left">雙平台差異：蝦皮日流 5K-90K (均客單 7K)；Yahoo 日流 100-500 (均客單 4K)。</li>
+                        <li class="li-bullet text-left">齊頭式定價會導致蝦皮轉換低、Yahoo 品牌信任感流失。</li>
+                        <li class="li-bullet text-left">使用者行為迥異：蝦皮重促銷，Yahoo 重品牌與穩定回饋。</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong class="text-blue-400 block mb-2 font-black text-left">HOW</strong>
+                    <ul class="space-y-1 text-slate-300 text-left">
+                        <li class="li-bullet text-left">重新定義角色：蝦皮為流量與銷售引擎；Yahoo 為品牌穩定窗口。</li>
+                        <li class="li-bullet text-left">差異化策略：蝦皮配合平台檔期爆發；Yahoo 維持穩定與獨家組合。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-white/10 text-left">
+                <strong class="text-purple-400 text-[11px] block mb-1 font-black text-left">WHAT I DID</strong>
+                <p class="text-slate-300 text-[10px] text-left">蝦皮：搭配關鍵字廣告與曝光版位，主推高轉換商品；Yahoo：設定限定組合，增加獨家競爭力；控管兩平台價差過大，主檔活動錯開避免自家競爭。</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         [PAGE 3] 作品集：案例三、數據邏輯、工具堆疊
+         ========================================== -->
+    <div class="pdf-page dark-theme">
+        <!-- Case 3 -->
+        <div class="case-card mb-8">
+            <h4 class="text-xl font-bold text-white mb-1 text-left text-left">案例三：成效不如預期的優化與復盤</h4>
+            <p class="text-orange-400 text-[10px] font-bold mb-4 uppercase italic text-left text-left">針對轉換率不佳進行即時修正</p>
+            <div class="grid grid-cols-2 gap-6 text-[11px] leading-relaxed text-left text-left">
+                <div>
+                    <strong class="text-orange-500 block mb-2 font-black text-left">WHY</strong>
+                    <ul class="space-y-1 text-slate-300 text-left text-left">
+                        <li class="li-bullet text-left">曝光與流量達標，但轉換率低於預期。</li>
+                        <li class="li-bullet text-left">回饋門檻過高導致命中率低。</li>
+                        <li class="li-bullet text-left">原有高轉換商品已進入銷售疲乏期。</li>
+                    </ul>
+                </div>
+                <div>
+                    <strong class="text-blue-400 block mb-2 font-black text-left text-left">HOW</strong>
+                    <ul class="space-y-1 text-slate-300 text-left text-left">
+                        <li class="li-bullet text-left">即時更換主打品為季節性新品，提高進站轉換。</li>
+                        <li class="li-bullet text-left">下修回饋門檻提升參與率。</li>
+                        <li class="li-bullet text-left">素材改以「實際使用情境+核心利益點」呈現。</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-4 pt-4 border-t border-white/10 text-left text-left">
+                <strong class="text-purple-400 text-[11px] block mb-1 font-black text-left text-left">WHAT I DID & RESULTS</strong>
+                <p class="text-slate-300 text-[10px] text-left text-left">調整後持續觀察數據變化，同步數據給行銷與設計團隊進行迭代。結果：ROAS 提升 +6，轉換率成功回升。建立「活動中期優化 SOP」。</p>
+            </div>
+        </div>
+
+        <h3 class="text-xl font-black text-orange-500 border-b border-white/10 pb-2 mb-8 uppercase text-left tracking-wider">Data Logic & Tools Stack</h3>
+        <div class="grid grid-cols-2 gap-6 mb-12 text-left text-left">
+            <div class="bg-white/5 p-6 rounded-2xl border border-white/10 text-left text-left">
+                <h5 class="text-orange-400 font-black mb-4 text-sm text-left text-left">毛利計算表邏輯</h5>
+                <div class="text-[10px] space-y-2 text-slate-300 text-left text-left">
+                    <p>▹ <strong>活動價</strong> → 進行精確成本拆解與通路扣項分析</p>
+                    <p>▹ <strong>運費 + 贈品</strong> → 換算隱性成本，建立單件毛利模型</p>
+                    <p>▹ <strong>淨利率</strong> → 最終評估指標，支援活動前快速決策</p>
+                </div>
+            </div>
+            <div class="bg-white/5 p-6 rounded-2xl border border-white/10 text-left text-left">
+                <h5 class="text-blue-400 font-black mb-4 text-sm text-left text-left">回饋試算邏輯</h5>
+                <div class="text-[10px] space-y-2 text-slate-300 text-left text-left">
+                    <p>▹ <strong>門檻設定</strong> → 根據歷史主力客單價進行命中率分析</p>
+                    <p>▹ <strong>形式評估</strong> → 比較平台券、點數回饋與贈品效力</p>
+                    <p>▹ <strong>風險控制</strong> → 預設回饋上限，確保 ROI 安全區間</p>
+                </div>
+            </div>
+        </div>
+
+        <h3 class="text-xl font-black text-orange-500 border-b border-white/10 pb-2 mb-8 uppercase text-left text-left">Tools Stack</h3>
+        <div class="grid grid-cols-4 gap-6 text-center text-center">
+            <div><h6 class="text-[10px] text-slate-500 mb-3 uppercase font-black text-center">辦公生產力</h6><p class="text-[10px] font-bold text-white text-center leading-tight">MS Excel (進階)<br>PowerPoint / Word</p></div>
+            <div><h6 class="text-[10px] text-slate-500 mb-3 uppercase font-black text-center">視覺與設計</h6><p class="text-[10px] font-bold text-white text-center leading-tight">Adobe Illustrator<br>Photoshop / Canva</p></div>
+            <div><h6 class="text-[10px] text-slate-500 mb-3 uppercase font-black text-center">AI 智慧助手</h6><p class="text-[10px] font-bold text-white text-center leading-tight">ChatGPT / Claude<br>NotebookLM</p></div>
+            <div><h6 class="text-[10px] text-slate-500 mb-3 uppercase font-black text-center">媒體與社群</h6><p class="text-[10px] font-bold text-white text-center leading-tight">FB / IG Business<br>LINE 官方帳號</p></div>
+        </div>
+
+        <footer class="mt-auto pb-6 text-center text-slate-500 text-[10px] uppercase tracking-widest text-center">
+            © 2026 CHIU YUN HAN. All Rights Reserved.
+        </footer>
+    </div>
+
+    <!-- ==========================================
+         [PAGE 4] 繁體中文履歷 (精準一頁 A4)
+         ========================================== -->
+    <div class="pdf-page">
+        <header class="flex justify-between items-start mb-6 text-left text-left">
+            <div>
+                <h1 class="text-4xl font-black text-slate-900 mb-1 text-left text-left">邱筠涵 <span class="text-slate-400 font-light text-xl uppercase">Yuna Chiu</span></h1>
+                <p class="text-orange-600 font-black text-lg text-left text-left">電商營運資深專員</p>
+            </div>
+            <div class="text-right text-[10px] text-slate-600 space-y-0.5 text-right">
                 <p>📞 0918-896-697</p>
                 <p>✉️ dots.chiu@gmail.com</p>
                 <p>📍 台灣</p>
             </div>
         </header>
 
-        <!-- 專業自傳 -->
-        <section class="mb-10">
-            <h3 class="section-title">專業自傳 BIOGRAPHY</h3>
-            <div class="text-sm leading-relaxed text-slate-700 space-y-3">
-                <p><strong>「人要為自己負責」</strong>是我自幼深植的核心信念。這份責任感塑造了我積極負責、細心且樂於持續學習的工作態度。我擅長整合行銷思維與業務邏輯，並以數據導向優化策略，致力將每段職涯經歷轉化為可延續的專業實力。</p>
-                <p>目前於 <strong>城欣科技</strong> 擔任資深營運專員，主導蝦皮與 Yahoo 等平台策略，曾寫下最高 <strong>YOY 57% 增長紀錄</strong>，並達成 <strong>單平台月均營收破 600 萬</strong> 的戰績。我具備品牌曝光、導購轉換與平台經營的完整經驗，並能熟練運用設計工具與跨團隊高效協作。</p>
-            </div>
+        <section class="mb-4 text-left text-left">
+            <h3 class="section-header text-left text-left">關於我</h3>
+            <p class="text-[11px] leading-relaxed text-slate-700 text-left text-left text-left text-left">
+                「人要為自己負責」是我自小深植的核心信念，塑造了我做事細心、積極負責的態度。目前任職於 <strong>城欣科技</strong> 擔任電商營運資深專員，主導蝦皮、Yahoo 等平台策略，曾寫下年度最高 <strong>YOY 57% 增長</strong>，並達成單一平台 <strong>月均業績突破 600 萬</strong> 的戰績。我擅長整合行銷思維與業務邏輯，並以數據導向優化策略與提升績效，熟練運用設計工具與跨團隊高效協作，致力將每段經歷轉化為可延續的專業實力。
+            </p>
         </section>
 
-        <!-- 工作經驗 -->
-        <section class="mb-10">
-            <h3 class="section-title">工作經驗 EXPERIENCE</h3>
-            
-            <div class="space-y-8">
-                <!-- Chengxin -->
-                <div>
-                    <div class="flex justify-between items-baseline mb-2">
-                        <h4 class="text-lg font-bold text-slate-900">城欣科技股份有限公司</h4>
-                        <span class="text-slate-500 text-sm font-medium">2024.07 - 至今</span>
+        <section class="mb-4 text-left text-left">
+            <h3 class="section-header text-left font-black text-left">工作經驗</h3>
+            <div class="space-y-4 text-left text-left">
+                <div class="text-left text-left">
+                    <div class="flex justify-between items-baseline mb-0.5 text-left text-left">
+                        <h4 class="text-sm font-black text-slate-900 text-left text-left">城欣科技股份有限公司</h4>
+                        <span class="text-orange-600 font-black text-[10px]">2024.07 - 至今</span>
                     </div>
-                    <p class="text-orange-600 font-bold text-sm mb-2 uppercase">Senior E-commerce Operations Specialist</p>
-                    <ul class="list-disc ml-5 text-sm text-slate-700 space-y-1">
-                        <li>主導 Shopee、YAHOO 平台營運策略，業績年度最高 <strong>YOY 達 57%</strong>。</li>
-                        <li>實現單一平台 <strong>月均業績突破 600 萬</strong>，顯著提升整體專案操作效能。</li>
-                        <li>負責精準廣告投放優化、大型活動規劃（Double Day）與通路合作洽談。</li>
+                    <p class="text-slate-500 font-black text-[9px] mb-1 uppercase text-left text-left">電商營運資深專員</p>
+                    <ul class="list-disc ml-4 text-[10px] text-slate-700 space-y-0.5 text-left text-left">
+                        <li>主導 Shopee、YAHOO 平台營運，實現年度最高 <strong>YOY 57% 增長</strong>。</li>
+                        <li>實現單一平台 <strong>月均營收破 600 萬</strong>，顯著提升整體操作效能與回饋效率。</li>
+                        <li>制定長短期行銷策略，包含廣告投放、通路洽談與成效數據復盤分析。</li>
                     </ul>
                 </div>
-
-                <!-- Keyi -->
-                <div>
-                    <div class="flex justify-between items-baseline mb-2">
-                        <h4 class="text-lg font-bold text-slate-900">可易家電有限公司</h4>
-                        <span class="text-slate-500 text-sm font-medium">2023.09 - 2024.05</span>
+                <div class="text-left text-left">
+                    <div class="flex justify-between items-baseline mb-0.5 text-left text-left">
+                        <h4 class="text-sm font-black text-slate-900 text-left text-left">可易家電有限公司</h4>
+                        <span class="text-slate-500 font-black text-[10px]">2023.09 - 2024.05</span>
                     </div>
-                    <p class="text-slate-500 font-bold text-sm mb-2 uppercase">Business Manager</p>
-                    <ul class="list-disc ml-5 text-sm text-slate-700 space-y-1">
-                        <li>主導商品頁視覺與文案改版，<strong>轉換率成長 21%</strong>，帶動單月業績成長 48%。</li>
-                        <li>開發多元線上/線下新通路，個人業績翻倍成長，強化品牌滲透力。</li>
+                    <p class="text-slate-500 font-black text-[9px] mb-1 uppercase text-left text-left">業務主任</p>
+                    <ul class="list-disc ml-4 text-[10px] text-slate-700 space-y-0.5 text-left text-left">
+                        <li>主導商品頁視覺與文案改版，使 <strong>轉換率提升 21%</strong>，帶動單月業績成長 48%。</li>
+                        <li>開發多元新通路，個人業績翻倍成長，強化品牌市場滲透力。</li>
                         <li>導入直播銷售模式，曾於 30 分鐘內創下多筆極速轉單紀錄。</li>
                     </ul>
                 </div>
-
-                <!-- Shifangli -->
-                <div>
-                    <div class="flex justify-between items-baseline mb-2">
-                        <h4 class="text-lg font-bold text-slate-900">十方力有限公司</h4>
-                        <span class="text-slate-500 text-sm font-medium">2022.04 - 2023.02</span>
+                <div class="text-left text-left">
+                    <div class="flex justify-between items-baseline mb-0.5 text-left text-left text-left">
+                        <h4 class="text-sm font-black text-slate-900 text-left text-left">十方力有限公司</h4>
+                        <span class="text-slate-500 font-black text-[10px]">2022.04 - 2023.02</span>
                     </div>
-                    <p class="text-slate-500 font-bold text-sm mb-2 uppercase">Marketing Specialist</p>
-                    <ul class="list-disc ml-5 text-sm text-slate-700 space-y-1">
-                        <li>負責 KOL/KOC 及團媽開發洽談，有效擴大社群品牌影響力。</li>
-                        <li>撰寫高效轉化商品文案，獨立負責多通路產品提品、上下架與時程管理。</li>
-                        <li>執行精準廣告投放與數據追蹤，持續優化受眾投遞精準度。</li>
+                    <p class="text-slate-500 font-black text-[9px] mb-1 uppercase text-left text-left">行銷企劃專員</p>
+                    <ul class="list-disc ml-4 text-[10px] text-slate-700 space-y-0.5 text-left text-left">
+                        <li>負責 KOL/KOC/團媽開發與合作洽談；撰寫高效轉化文案，負責多通路產品提品與上下架。</li>
+                        <li>執行廣告投放與數據追蹤，優化受眾投遞精準度。</li>
                     </ul>
                 </div>
-
-                <!-- Fuhai -->
-                <div>
-                    <div class="flex justify-between items-baseline mb-2">
-                        <h4 class="text-lg font-bold text-slate-900">富海科技</h4>
-                        <span class="text-slate-500 text-sm font-medium">2021.01 - 2021.12</span>
+                <div class="text-left text-left">
+                    <div class="flex justify-between items-baseline mb-0.5 text-left text-left">
+                        <h4 class="text-sm font-black text-slate-900 text-left text-left">富海科技</h4>
+                        <span class="text-slate-500 font-black text-[10px]">2021.01 - 2021.12</span>
                     </div>
-                    <p class="text-slate-500 font-bold text-sm mb-2 uppercase">Korean Translator</p>
-                    <ul class="list-disc ml-5 text-sm text-slate-700 space-y-1">
-                        <li>負責各式商務文件、合約翻譯與口譯工作，協助跨國團隊溝通。</li>
-                        <li>處理產品在地化內容，打下細緻語感與邏輯處理的專業基本功。</li>
+                    <p class="text-slate-500 font-black text-[9px] mb-1 uppercase text-left text-left">韓文翻譯人員</p>
+                    <ul class="list-disc ml-4 text-[10px] text-slate-700 space-y-0.5 text-left text-left">
+                        <li>負責各式韓文商務文件翻譯與口譯，協助跨國團隊溝通與產品在地化內容。</li>
                     </ul>
                 </div>
             </div>
         </section>
 
-        <!-- 學歷與其他 -->
-        <div class="grid grid-cols-2 gap-10">
-            <section>
-                <h3 class="section-title">學歷 EDUCATION</h3>
-                <div class="space-y-4">
-                    <div>
-                        <p class="font-bold text-slate-900 text-sm">銘傳大學</p>
-                        <p class="text-slate-600 text-xs">應用中文學系 | 文學士</p>
-                    </div>
-                    <div>
-                        <p class="font-bold text-slate-900 text-sm">梨花女子大學語學堂</p>
-                        <p class="text-slate-600 text-xs">韓國語文學系研修</p>
-                    </div>
-                </div>
+        <div class="grid grid-cols-2 gap-10 mt-auto border-t border-slate-100 pt-4 text-left text-left">
+            <section class="text-left text-left">
+                <h3 class="section-header text-[11px] font-black uppercase text-left text-left">學歷</h3>
+                <p class="text-[10px] text-left text-left"><strong>銘傳大學</strong> | 應用中文學系 | 文學士</p>
+                <p class="text-[10px] text-left text-left"><strong>梨花女子大學語學堂</strong> | 韓國語文學系研修</p>
             </section>
-            
-            <section>
-                <h3 class="section-title">語言與證照 SKILLS</h3>
-                <div class="text-xs text-slate-700 space-y-2">
-                    <p><strong>語言：</strong>韓文 (TOPIK 6級)、英文 (TOEIC 600)、中文 (母語)</p>
-                    <p><strong>軟體：</strong>Photoshop, Illustrator, Canva, MS Excel 進階試算</p>
-                    <p><strong>證照：</strong>Google Ads 認證、第一屆 AI 應用規劃師結業</p>
-                </div>
+            <section class="text-left text-left">
+                <h3 class="section-header text-[11px] font-black uppercase text-left text-left">技能與證照</h3>
+                <p class="text-[10px] text-slate-700 text-left text-left">韓文 (TOPIK 6), 英文 (TOEIC 600), 中文 (母語)</p>
+                <p class="text-[10px] text-slate-700 text-left text-left">Google Ads 認證 / AI 應用規劃師 / SSE Microsoft</p>
             </section>
         </div>
+    </div>
+
+    <!-- ==========================================
+         [PAGE 5] 英文履歷 (精準一頁 A4)
+         ========================================== -->
+    <div class="pdf-page">
+        <header class="flex justify-between items-start mb-8 text-left text-left">
+            <div>
+                <h1 class="text-4xl font-black text-slate-900 mb-1 uppercase text-left text-left">Yuna Chiu</h1>
+                <p class="text-orange-600 font-black text-lg uppercase text-left text-left">Senior E-commerce Operations Specialist</p>
+            </div>
+            <div class="text-right text-[10px] text-slate-600 space-y-1 text-right">
+                <p>📞 0918-896-697</p>
+                <p>✉️ dots.chiu@gmail.com</p>
+            </div>
+        </header>
+
+        <section class="mb-8 text-left text-left">
+            <h3 class="section-header uppercase text-sm font-black text-left text-left">Professional Summary</h3>
+            <p class="text-[12px] leading-relaxed text-slate-700 text-left text-left">
+                Results-driven E-commerce expert with a strong track record in scaling brands through data-driven strategies. Currently at <strong>Chengxin Technology</strong>, achieving peak <strong>57% YOY revenue growth</strong> and handling over <strong>NT$6M</strong> in monthly revenue on single platforms. Proficient in cross-platform operations, conversion optimization, and cross-functional team collaboration.
+            </p>
+        </section>
+
+        <section class="mb-8 text-left text-left">
+            <h3 class="section-header uppercase text-sm font-black text-left text-left text-left">Professional Experience</h3>
+            <div class="space-y-6 text-left text-left">
+                <div class="text-left text-left">
+                    <div class="flex justify-between items-baseline mb-1 text-left text-left">
+                        <h4 class="text-md font-black text-slate-900 text-left text-left">Chengxin Technology Co., Ltd.</h4>
+                        <span class="text-orange-600 font-black text-[10px]">2024.07 - Present</span>
+                    </div>
+                    <ul class="list-disc ml-5 text-[11px] text-slate-700 space-y-1.5 text-left text-left text-left">
+                        <li>Managed Shopee and YAHOO operations, achieving a peak <strong>57% YOY revenue growth</strong>.</li>
+                        <li>Sustained monthly revenue exceeding <strong>NT$6 million</strong> with high operational efficiency.</li>
+                        <li>Formulated marketing strategies including ad optimization and multi-channel channel management.</li>
+                    </ul>
+                </div>
+                <div class="text-left text-left">
+                    <div class="flex justify-between items-baseline mb-1 text-left text-left">
+                        <h4 class="text-md font-black text-slate-900 text-left text-left text-left">Keyi Home Appliances</h4>
+                        <span class="text-slate-500 font-black text-[10px]">2023.09 - 2024.05</span>
+                    </div>
+                    <ul class="list-disc ml-5 text-[11px] text-slate-700 space-y-1.5 text-left text-left text-left">
+                        <li>Boosted <strong>conversion rate by 21%</strong> through product page redesign and UX optimization.</li>
+                        <li>Expanded new sales channels, doubling individual performance metrics and brand penetration.</li>
+                        <li>Integrated successful livestream commerce models with rapid conversion results.</li>
+                    </ul>
+                </div>
+                <div class="text-left text-left">
+                    <div class="flex justify-between items-baseline mb-1 text-left text-left text-left">
+                        <h4 class="text-md font-black text-slate-900 text-left text-left">Shifangli Co., Ltd.</h4>
+                        <span class="text-slate-500 font-black text-[10px]">2022.04 - 2023.02</span>
+                    </div>
+                    <ul class="list-disc ml-5 text-[11px] text-slate-700 space-y-1.5 text-left text-left text-left">
+                        <li>Coordinated KOL/KOC recruitment and product-market fit for social commerce.</li>
+                        <li>Executed end-to-end data tracking and copywriting for high-conversion marketing campaigns.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-2 gap-10 mt-auto pb-6 border-t border-slate-100 pt-4 text-left text-left">
+            <section class="text-left text-left"><h3 class="section-header text-xs uppercase font-black text-left text-left text-left">Education</h3><p class="text-[11px] text-left text-left text-left"><strong>Ming Chuan University</strong> | Applied Chinese | B.A.<br><strong>Ewha Womans University</strong> | Korean Language Program</p></section>
+            <section class="text-left text-left"><h3 class="section-header text-xs uppercase font-black text-left text-left text-left">Languages</h3><p class="text-[11px] text-slate-700 text-left text-left text-left">Korean (TOPIK 6), English (TOEIC 600), Chinese (Native)</p></section>
+        </div>
+        
+        <footer class="mt-4 pt-4 border-t border-slate-100 text-center text-slate-400 text-[8px] uppercase tracking-widest text-center text-center">
+            © 2026 CHIU YUN HAN. All Rights Reserved.
+        </footer>
     </div>
 
 </body>
